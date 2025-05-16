@@ -1,2 +1,3 @@
 # MI-FHIR
-Our application for the fhir devdays 
+Our application for the fhir devdays student track
+
