@@ -1,3 +1,2 @@
 # MI-FHIR
-Our application for the fhir devdays student track
-
+a simple, patient-centered mobile app designed for pregnant women with low health literacy. The app pulls clinical notes and health data from EHRs using FHIR, then translates complex medical language into easy-to-understand summaries. Users can view key appointment details, track their health over time, and securely share simplified notes with caregivers or family members. By combining FHIR interoperability with inclusive design, this tool empowers patients to better understand and engage with their maternal care.
