@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Dashboard</title>
+</head>
+<body>
+  <button id="loadButton">Load data</button>
+  <div id="result"></div>
+</body>
+
+
+<script>
+  const fhir = 'https://hapi.fhir.org/baseR4'; // test server, maybe we should find another one tho idk bout this one
+  const patientId = 'example'; // this is "https://hapi.fhir.org/baseR4/Patient/example" but it is a man.. couldnt find any woman with heartrate 
+     
+  async function loadObservations() {
+    const resultDiv = document.getElementById('result');
+    resultDiv.textContent = 'im loading :-)';
+
+    const response = await fetch(`${fhir}/Observation?patient=${patientId}`);
+    const data = await response.json();
+    console.log(data)
+    const observation = data.entry[0].resource;
+    const heartrate = observation.valueQuantity.value;
+    console.log(heartrate)
+    resultDiv.textContent = `Your heartbeat is: ${heartrate}`;
+
+
+  }
+    
+
+  document.getElementById('loadButton').addEventListener('click',  loadObservations);
+
+
+
+</script>
+</html>
