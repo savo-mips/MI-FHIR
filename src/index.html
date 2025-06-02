@@ -2,24 +2,51 @@
 <html>
 <head>
     <meta charset="UTF-8" />
-    <title>Dashboard</title>
+    <title>MommyNotes | Dashboard</title>
+    <link rel="stylesheet" href="stylesheet.css">
 </head>
-<body>
-  <button id="loadButton">Load data</button>
+
+<body onload="loadObservations()">
+    <div class="container">
+    <div class="box" id="box1"></div>
+    <div class="box" id="box2"></div>
+    <div class="box" id="box3"></div>
+    <div class="box" id="box4"></div>
+    <div class="box" id="box5"></div>
+    <div class="box" id="box6"></div>
+  </div>
+
   <div id="result"></div>
 </body>
 <script>
-    const fhir = 'https://hapi.fhir.org/baseR4';
-    const patientId = 'example';
+    // log in check!!
+    document.addEventListener("DOMContentLoaded", function () {
+    const sessionToken = localStorage.getItem("sessionToken");
 
-    //Voeg hier de LOINC-codes toe die je wil tonen
+    if (!sessionToken) {
+      alert("You are not logged in. You will be sent back to the log-in page");
+      window.location.href = "login.html";
+    } else {
+      console.log("login token:", sessionToken);
+    }
+    });
+    // login check ends here
+
+   
+    const fhir = 'https://hapi.fhir.org/baseR5';
+    const patientId = '799933';
+
+    // LOINC-codes you want to find, add them here
     const codesToFind = [
         '8867-4',
-        '29463-7'
+        '2339-0',
+        '29463-7',
+        '11884-4'
     ];
 
     async function loadObservations() {
         const resultDiv = document.getElementById('result');
+        
         resultDiv.innerHTML = 'Loading...';
 
         try {
@@ -32,7 +59,10 @@
             }
 
             let output = '';
+            i = 1
             for (const code of codesToFind) {
+                
+                const currentBoxDiv = document.getElementById(`box${i}`);
                 const obs = data.entry.find(entry =>
                     entry.resource.code?.coding?.some(c => c.code === code)
                 );
@@ -42,19 +72,21 @@
                     const value = resource.valueQuantity?.value;
                     const unit = resource.valueQuantity?.unit;
                     const label = resource.code.coding[0].display
-                    output += `${label}: ${value} ${unit}<br>`;
+                    output = `${label}:<br> 
+                    ${value} ${unit}`;
+                    currentBoxDiv.innerHTML = output
                 } else {
                     output += `Observation for code ${code} not found.<br>`;
                 }
+                i++
             }
-            resultDiv.innerHTML = output;
+            resultDiv.innerHTML = '';
 
         } catch (err) {
             console.error(err);
-            resultDiv.textContent = 'Error fetching data.';
+            resultDiv.innerHTML = 'Error fetching data.';
         }
     }
 
-    document.getElementById('loadButton').addEventListener('click', loadObservations);
 </script>
 </html>
