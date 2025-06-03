@@ -10,7 +10,7 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #fdf9f6;;
+            background-color: #decebd;;
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -71,7 +71,7 @@
         }
 
         button {
-            background-color: #a66e4a;
+            background-color: #b37d5d;
             color: white;
             padding: 12px;
             border: none;
@@ -99,11 +99,11 @@
         <div class="login-form-inner">
             <h2>Login</h2>
             <form id="logindetails">
-                <label for="username">Username:</label>
-                <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                <label for="patientId">Patient ID:</label>
+                <input type="text" id="patientId" name="patientId" placeholder="e.g. '799933'" required>
 
                 <label for="password">Password:</label>
-                <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <input type="password" id="password" name="password" placeholder="e.g. 'test123'" required>
 
                 <button type="submit">Login</button>
             </form>
@@ -115,17 +115,17 @@
 <script>
     document.getElementById('logindetails').addEventListener("submit", function (event) {
         event.preventDefault();
-        const username = document.getElementById('username').value;
+        const patientId = document.getElementById('patientId').value;
         const password = document.getElementById('password').value;
 
-        const usernameTest = 'yasmina';
         const passwordTest = 'test123';
 
-        if (username === usernameTest && password === passwordTest) {
+        if (password === passwordTest) {
             localStorage.setItem("sessionToken", Date.now());
-            window.location.href = "index.html";
+            localStorage.setItem("patientId", patientId);
+            window.location.href = "main.html";
         } else {
-            alert("Username and/or password is incorrect. Please try again.");
+            alert("Incorrect password. Please try again.");
         }
     });
 </script>
