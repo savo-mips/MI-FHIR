@@ -161,8 +161,8 @@
 <body onload="loadObservations()">
     <div class="main">
 
-        <div class="top-box">
-            Hello, Patient
+        <div class="top-box" id="top-box">
+            Hello,
         </div>
 
         <div class="container">
@@ -217,7 +217,7 @@
 
         const fhir = 'https://hapi.fhir.org/baseR5';
 
-        const codesToFind = ['8867-4', '2339-0', '29463-7', '11884-4'];
+        const codesToFind = ['8867-4', '2339-0', '29463-7', '11884-4', '85354-9', '718-7'];
 
         async function loadObservations() {
             const resultDiv = document.getElementById('result');
@@ -240,12 +240,25 @@
                     );
 
                     if (obs) {
-                        const resource = obs.resource;
-                        const value = resource.valueQuantity?.value;
-                        const unit = resource.valueQuantity?.unit;
-                        const label = resource.code.coding[0].display;
+                        var resource = obs.resource;
+                        var value = resource.valueQuantity?.value;
+                        var unit = resource.valueQuantity?.unit;
+                        var label = resource.code.coding[0].display;
                         const contentDiv = currentBoxDiv.querySelector(".box-content");
                         contentDiv.innerHTML = `<strong>${label}</strong><br>${value} ${unit}`;
+                        
+                        // this is needed bc blood pressure is a component.. works differently
+                        if (label === "Blood pressure panel with all children optional") {
+                            label = "Blood Pressure";
+                            let componentOutput = `<strong>${label}</strong><br>`;
+                            resource.component.forEach(component => {
+                                let componentLabel = component.code.coding[0].display;
+                                let componentValue = component.valueQuantity?.value ?? "?";
+                                let componentUnit = component.valueQuantity?.unit || "";
+                                componentOutput += `${componentLabel}: ${componentValue} ${componentUnit}<br>`;
+                            });
+                            contentDiv.innerHTML = componentOutput;
+                        }
                     } else {
                         currentBoxDiv.innerHTML += `<div>No observation for code ${code}.</div>`;
                     }
@@ -253,16 +266,26 @@
                 }
 
                 resultDiv.innerHTML = '';
+                
+                // for the name on top
+                const responseName = await fetch(`${fhir}/Patient/${patientId}`);
+                const dataName= await responseName.json();
+                const name = dataName.name?.[0];
+                const Given = name?.given?.[0] || "no";
+                const Family = name?.family || "no";
+
+                const topDiv = document.getElementById('top-box');
+                topDiv.innerHTML = `Hello, ${Given} ${Family}`
+
             } catch (err) {
                 console.error(err);
                 resultDiv.innerHTML = 'Error fetching data.';
             }
         }
-
         const popupContent = {
             1: {
                 title: "Heart Rate",
-                text: "Your heart rate indicates how many times your heart beats per minute. Normal range is 70–120 bpm.",
+                text: "Your heart rate indicates how many times your heart beats per minute. Normal range is 60–100 bpm.",
                 image: "43474626_9049798.jpg"
             },
             2: {
@@ -286,7 +309,7 @@
                 image: "43474626_9049798.jpg"
             },
             6: {
-                title: "Heamatocrit level (Red Blood Cell Count)",
+                title: "Hemoglobin (Red Blood Cell Count)",
                 text: "Your doctor will monitor this to make sure you have enough oxygen-carrying cells for a healthy pregnancy.",
                 image: "43474626_9049798.jpg"
             }
@@ -312,6 +335,8 @@
         document.querySelectorAll(".info-btn").forEach(btn => {
             btn.addEventListener("click", openPopup);
         });
+
+
     </script>
 </body>
 </html>
