@@ -155,10 +155,31 @@
             cursor: pointer;
             color: #444;
         }
+
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 10px;
+            background-color: #b37d5d;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            z-index: 1001;
+        }
+
+        .logout-btn:hover {
+            background-color: #8d5739;
+        }
     </style>
 </head>
 
 <body onload="loadObservations()">
+    <button class="logout-btn" onclick="window.location.href='index.html'">Logout</button>
     <div class="main">
 
         <div class="top-box" id="top-box">
